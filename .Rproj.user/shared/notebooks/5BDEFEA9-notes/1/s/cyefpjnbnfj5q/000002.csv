@@ -1,0 +1,27 @@
+"0","```r
+
+galton_clean3 <- galton_data %>%
+  rename(
+    family = V1,
+    father_height = V2, 
+    mother_height = V3,
+    sons_heights = V4,
+    daughters_heights = V5
+  ) %>%
+  mutate(
+    father_height = as.character(father_height), # change both to char so it works well with the sons,daughter heights because turning them into numbers gets rid of the remaining entries
+    mother_height = as.character(mother_height)
+  ) %>%
+  pivot_longer(
+    cols = c(sons_heights, daughters_heights, father_height, mother_height),
+    names_to = 'relation', # relation is their role in the family
+    values_to = 'height',  # this will measure their height
+  ) %>% 
+  separate_rows(
+    height,
+    sep = ','
+  ) %>%
+  mutate(
+    height = readr::parse_number(height) + 60
+  )
+```"

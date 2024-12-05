@@ -1,0 +1,6 @@
+"0","```r
+espn_raw <- read_html(\"https://www.espn.com/college-football/team/stats/_/id/213/penn-state-nittany-lions\") %>%
+  html_elements(css = 'table') %>%
+  html_table()
+rushing_data_raw <- bind_cols(espn_raw[[3]], espn_raw[[4]])
+```"

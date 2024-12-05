@@ -1,0 +1,6 @@
+"0","```r
+Minneapolis2013 %>%
+  group_by(Precinct) %>%
+  summarise(sum = n()) %>%
+  arrange(desc(sum))
+```"
