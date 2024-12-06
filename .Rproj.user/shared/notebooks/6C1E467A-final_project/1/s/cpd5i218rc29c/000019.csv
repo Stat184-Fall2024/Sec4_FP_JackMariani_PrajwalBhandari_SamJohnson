@@ -1,7 +1,0 @@
-"0","library(tidyverse)"
-"0","library(rvest)"
-"0","table_20 <- read_html(""https://www.presidency.ucsb.edu/statistics/elections/2020"") %>%"
-"0","  html_element(css = 'table')%>%"
-"0","  html_table()"
-"0",""
-"0","table_20"
