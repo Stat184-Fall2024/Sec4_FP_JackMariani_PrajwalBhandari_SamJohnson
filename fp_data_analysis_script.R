@@ -66,3 +66,28 @@ for (year in seq(1980, 2020, by = 4)) {
 }
 
 
+####### data attempt prajwal
+####### working with 2016 data
+#######
+library(tidyr)
+library(dplyr)
+library(rvest)
+str <- "https://www.presidency.ucsb.edu/statistics/elections/2016"
+table <- read_html(str) %>%
+  html_element(css = 'table') %>%
+  html_table() %>%
+  slice(-c(1:14)) %>%
+  slice(-c(55:n()))
+# to drop cols, reassign the table
+table <- table[, -(11:ncol(table))] %>% # use custom function to drop cols
+  mutate(
+    X5 = ifelse(X5 == "", 0, X5),
+    X8 = ifelse(X8 == "", 0, X8)
+  )
+
+# for nebraska and maine, add the congressional district votes to the at large votes. for this report, we just want to work with states and simplify the analysis a tiny bit.
+table[28,X8] <- 5
+
+
+
+
