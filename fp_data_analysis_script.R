@@ -4,6 +4,10 @@
 library(tidyverse)
 library(rvest)
 library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(rvest)
+library(readr)
 
 # collecting and cleaning the data
 
@@ -68,26 +72,109 @@ for (year in seq(1980, 2020, by = 4)) {
 
 ####### data attempt prajwal
 ####### working with 2016 data
-#######
-library(tidyr)
-library(dplyr)
-library(rvest)
-str <- "https://www.presidency.ucsb.edu/statistics/elections/2016"
-table <- read_html(str) %>%
-  html_element(css = 'table') %>%
-  html_table() %>%
-  slice(-c(1:14)) %>%
-  slice(-c(55:n()))
-# to drop cols, reassign the table
-table <- table[, -(11:ncol(table))] %>% # use custom function to drop cols
-  mutate(
-    X5 = ifelse(X5 == "", 0, X5),
-    X8 = ifelse(X8 == "", 0, X8)
-  )
 
-# for nebraska and maine, add the congressional district votes to the at large votes. for this report, we just want to work with states and simplify the analysis a tiny bit.
-table[28,X8] <- 5
+# we should write a function for each year, and do something like
+
+# if year == year:
+# function(year)
 
 
+clean_2016 <- function(){
+  str <- "https://www.presidency.ucsb.edu/statistics/elections/2016"
+  table <- read_html(str) %>%
+    html_element(css = 'table') %>%
+    html_table() %>%
+    slice(-c(1:14)) %>%
+    slice(-c(55:n()))
 
+  # to drop cols beyond 11 , reassign the table
+  table <- table[, (1:11)] %>%
+    mutate(
+      X5 = ifelse(X5 == "", '0', X5), # replace blanks with 0
+      X8 = ifelse(X8 == "", '0', X8),
+      X11 = ifelse(X11 == "",'0', X11),
+      # convert character cols to numeric by using readr::parse_number
+      X2 = readr::parse_number(X2),
+      X3 = readr::parse_number(X3),
+      X6 = readr::parse_number(X6),
+      X5 = readr::parse_number(X5),
+      X8 = readr::parse_number(X8),
+      X9 = readr::parse_number(X9),
+      X11 = readr::parse_number(X11),
+      X4 = readr::parse_number(gsub("%", "", X4)),
+      X7 = readr::parse_number(gsub("%", "", X7)),
+      X10 = readr::parse_number(gsub("%", "", X10)),
+      year = 2016 # add year col
+    )
+
+  # drop nebraska congressional district data. combine into the state data.
+  #- replace electoral vote counts
+  table[28,'X8'] <- 5
+  #- drop CD-{1,2,3)
+  table <- table[-c(29,30,31),]
+
+  # finally, rename the cols of the table
+
+  table <- table %>%
+    rename(
+      state = X1,
+      total_votes = X2,
+      d_votes = X3,
+      d_percent = X4,
+      d_ev = X5,
+      r_votes = X6,
+      r_percent = X7,
+      r_ev = X8,
+      other_votes = X9,
+      other_percent = X10,
+      other_ev = X11,
+      year = year
+    ) %>% # rearrange the order of cols
+    select(
+      year, state, total_votes,
+      d_votes, d_percent, d_ev,
+      r_votes, r_percent, r_ev,
+      other_votes, other_percent, other_ev
+    )
+  return(table)
+}
+
+# clean the data from 1980. This should be pretty straight forward.
+
+clean_80_92_96 <- function(y){
+  str <- paste0("https://www.presidency.ucsb.edu/statistics/elections/",y)
+  table <- read_html(str) %>%
+    html_element(css = 'table') %>%
+    html_table() %>%
+    slice(-c(1:9)) %>%
+    slice(-c(52:n()))
+  table <- table[, (1:11)]
+
+  return(table)
+}
+
+
+# actual function to create the table:
+create_clean_data <- function(){
+
+  clean_data = data.frame()
+
+  # we break the years into cases
+
+  # first few years
+  for (i in 0:8) {
+    year <- 1980 + 4 * i
+    str <-  paste0("https://www.presidency.ucsb.edu/statistics/elections/",year)
+    table <- read_html(str) %>%
+      html_element(css = 'table') %>%
+      html_table()
+    rbind(clean_data, clean_this_table(table))
+
+
+  # 2016
+  if(year == 2016) {
+      rbind(clean_data, clean_2016())
+    }
+  }
+}
 
