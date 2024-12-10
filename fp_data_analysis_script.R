@@ -1,12 +1,16 @@
 # Prajwal Bhandari, Jack Mariani, Sam Johnson
 
-##------- load required packages
+# load required packages
 library(tidyverse)
 library(rvest)
 library(ggplot2)
 
-##------- collecting and cleaning the data
-for (i in 0:10) {
+# collecting and cleaning the data
+
+# getting the data
+
+# have to split years
+for (i in 0:8) {
   result <- 1980 + 4 * i
   str <-  paste0("https://www.presidency.ucsb.edu/statistics/elections/",result)
   table <- read_html(str) %>%
