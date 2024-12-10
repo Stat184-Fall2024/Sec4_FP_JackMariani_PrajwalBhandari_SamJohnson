@@ -1,6 +1,0 @@
-"0","```r
-# different way to do it
-# galton_person %>%
-#   dplyr::select(height) %>%
-#   summarize(size = n())
-```"

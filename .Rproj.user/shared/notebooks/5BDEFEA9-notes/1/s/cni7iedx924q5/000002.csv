@@ -1,9 +1,0 @@
-"0","```r
-
-# scraping the psu roster page
-
-psu_roster <- read_html(\"https://gopsusports.com/sports/football/roster?view=table\") %>%
-  html_elements(css = 'table') %>%
-  html_table()
-roster_table_raw <-  psu_roster[[1]]
-```"
