@@ -183,7 +183,6 @@ clean_2000 <- function(){
       X7 = readr::parse_number(gsub("%", "", X7)),
       year = 2000, # add year col
       X10 = 100 - X4 - X7
-
     ) %>%
     rename(
       state = X1,
@@ -206,6 +205,7 @@ clean_2000 <- function(){
       other_votes, other_percent, other_ev
     )
   table[9,2] <- 'Dist. of Col.' #account for asterisk. We mention this in the report
+  # An elector from the District of Columbia abstained, which is why there are  only two votes for the year
 
   return(table)
 }
@@ -520,3 +520,14 @@ create_clean_data <- function(){
 
 # now that we have the data in a tidy, clean and easy to work with format, we can start the analysis.
 data <- create_clean_data()
+
+
+# we push the data to a google sheets document so that it is easier to retreive when working in the quarto document.
+library(googlesheets4)
+data %>%
+  write_sheet(
+  ss =
+    gs4_get(
+    "https://docs.google.com/spreadsheets/d/1GT8UOmD4l2j88wCLfCAlh_R7r0jWCtsmoL84kVvDOlc/edit?usp=sharing"),
+  sheet = 'main'
+  )

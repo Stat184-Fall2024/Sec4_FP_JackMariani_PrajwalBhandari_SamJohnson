@@ -1,31 +1,26 @@
 ---
-title: "stat 184 final_project"
-author: 'names'
-date: now
+= = title: "STAT 184 Final Project"
+author: "Prajwal Bhandari, Sam Johnson, Jack Mariani"
+format: pdf
 ---
 
 ## Quarto
 
-Some difficulty in loading a
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
 
 ```{r}
-library(tidyverse)
-library(rvest)
-table_20 <- read_html("https://www.presidency.ucsb.edu/statistics/elections/2020") %>%
-  html_element(css = 'table') %>%
-  html_table()
-
-table_20
-
+1 + 1
 ```
 
-### Import required packages
-
-```{ddd}
-
-```
+You can add options to executable code like this
 
 ```{r}
-
-
+#| echo: false
+2 * 2
 ```
+
+The `echo: false` option disables the printing of code (only output is displayed).
