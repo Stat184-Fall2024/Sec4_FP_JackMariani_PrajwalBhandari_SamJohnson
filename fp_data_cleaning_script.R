@@ -411,6 +411,15 @@ clean_2016 <- function(){
       r_votes, r_percent, r_ev,
       other_votes, other_percent, other_ev
     )
+
+  # Washington had 4 faithless electors, hawaii had 1, texas had 2 for a total of 7 faithless electors
+  table[48,6] <- 8 # wa
+  table[48,12] <- 4
+  table[12,6] <- 3  #hi
+  table[12,12] <- 1
+  table[44, 9] <- 36 #tx
+  table[44,12] <- 2
+
   return(table)
 }
 # clean the data from 2020
@@ -472,6 +481,8 @@ clean_2020 <- function(){
   table <- table %>%
     slice(-(21:22)) %>%
     slice(-(29:31))
+  # rename 'District of Columbia' to 'Dist. of Col."
+  table[9,2] <- 'Dist. of Col.'
 
   return(table)
 }
