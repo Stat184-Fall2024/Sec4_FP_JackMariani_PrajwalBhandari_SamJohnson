@@ -526,6 +526,29 @@ create_clean_data <- function(){
     }
   }
 
+  # now that we have the data in a clean format, we can do some feature engineering
+  # to extract data which would be useful to use in the analysis.
+  clean_data <- clean_data %>%
+    mutate(
+      win_margin_votes = pmax(r_votes, d_votes) - pmin(r_votes, d_votes),
+      win_margin_percent = pmax(r_percent, d_percent) - pmin(r_percent, d_percent),
+      # winning party
+      winning_party = case_when(r_votes > d_votes & r_votes > other_votes ~ "Republican",
+                                d_votes > r_votes & d_votes > other_votes ~ "Democrat",
+                                other_votes > r_votes & other_votes > d_votes ~ "Other"),
+      total_ev = d_ev + r_ev + other_ev,
+      voters_per_ev = total_votes/total_ev,
+      # vote share ratio (d/r)
+      r_d_vote_ratio = r_votes/d_votes,
+      # third party significance
+      other_sig = other_votes/(r_votes + d_votes),
+      # measures if third party votes influenced the result of the state
+      third_party_swing_potential = other_votes > abs(r_votes - d_votes)
+    )
+
+  # one final change: in 2000, an elector abstained so we can add the missing EV to dc's total EV count
+  clean_data[264,16] <- 3
+
   return(clean_data)
 }
 
@@ -535,6 +558,7 @@ data <- create_clean_data()
 
 # we push the data to a google sheets document so that it is easier to retreive when working in the quarto document.
 library(googlesheets4)
+gs4_auth()
 data %>%
   write_sheet(
   ss =
