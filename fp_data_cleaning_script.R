@@ -550,10 +550,8 @@ create_clean_data <- function(){
 
     )
 
-  # one final change: in 2000, an elector abstained so we can add the missing EV to dc's total EV count
+  # one final change: in 2000, an elector abstained so we can add the missing EV to DC's total EV count
   clean_data[264,16] <- 3
-
-
 
   return(clean_data)
 }
