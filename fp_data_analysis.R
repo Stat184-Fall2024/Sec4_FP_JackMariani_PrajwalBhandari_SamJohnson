@@ -185,12 +185,18 @@ init_table_bstrap_num_results <- rbind(bstrap_high_margin, bstrap_low_margin) %>
 
 # import required library
 library(e1071)
-set.seen(123) # seed for reproducibility
+set.seed(123) # seed for reproducibility
 
 n <- nrow(data)
 train_set <- sample(1:n, size = 0.8*n) #train on 80% of the data
 training_data <- data[train_set, ]
 testing_data <- data[-train_set, ]
 
-svm_model <- svm(~ election_winner ., data = training_data, kernel = 'linear') # linear kernel splits the data linearly into groups
-true_results <-testing_data$election_winner
+svm_model <- svm(winning_party ~ ., data = training_data, kernel = 'linear') # linear kernel splits the data linearly into groups
+true_results <- testing_data$winning_party
+prediction <- predict(svm_model, newdata = test_data)
+
+confusion_matrix <- table(Predicted = prediction, Actual = true_results)
+print(confusion_matrix)
+
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
