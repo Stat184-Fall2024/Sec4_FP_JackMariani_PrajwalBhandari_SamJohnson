@@ -165,12 +165,12 @@ ggplot() +
 
 init_table_bstrap_num_results <- rbind(bstrap_high_margin, bstrap_low_margin) %>%
   mutate(
-    high_margin = win_margin_percent > 0
+    high_or_low = if_else(win_margin_percent > 8, 'High', 'Low')
     ) %>%
-  group_by(high_margin) %>%
+  group_by(high_or_low) %>%
   summarize(
     mean_vote_per_ev = mean(win_margin_votes/total_ev),
-    sd_vote_per_ev = mean(win_margin_votes/total_ev),
+    sd_vote_per_ev = sd(win_margin_votes/total_ev),
     # confidence intervals
     lower_ci = mean(win_margin_votes / total_ev) - qt(0.975, df = n() - 1) *
     (sd(win_margin_votes / total_ev) / sqrt(n())),
@@ -181,4 +181,16 @@ init_table_bstrap_num_results <- rbind(bstrap_high_margin, bstrap_low_margin) %>
 # bstrap_res_table <-; TODO: polish the table
 
 
-## incorporating a machine learning model (SVM); TODO: predict the party that wins the state with SVM model
+## incorporating a machine learning model (SVM); TODO: predict the party that wins the state with SVM model ----
+
+# import required library
+library(e1071)
+set.seen(123) # seed for reproducibility
+
+n <- nrow(data)
+train_set <- sample(1:n, size = 0.8*n) #train on 80% of the data
+training_data <- data[train_set, ]
+testing_data <- data[-train_set, ]
+
+svm_model <- svm(~ election_winner ., data = training_data, kernel = 'linear') # linear kernel splits the data linearly into groups
+true_results <-testing_data$election_winner
