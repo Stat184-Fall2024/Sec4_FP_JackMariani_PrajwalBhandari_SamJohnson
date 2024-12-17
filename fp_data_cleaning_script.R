@@ -538,15 +538,19 @@ create_clean_data <- function(){
                                 other_votes > r_votes & other_votes > d_votes ~ "Other"),
       total_ev = d_ev + r_ev + other_ev,
       voters_per_ev = total_votes/total_ev,
-      # vote share ratio (d/r)
+      # vote share ratio (r/d)
       r_d_vote_ratio = r_votes/d_votes,
       # third party significance
       other_sig = other_votes/(r_votes + d_votes),
       # measures if third party votes influenced the result of the state
-      third_party_swing_potential = other_votes > abs(r_votes - d_votes)
+      third_party_swing_potential = other_votes > abs(r_votes - d_votes),
+
+      # change data type of winning party
+      winning_party = as.factor(winning_party),
+
     )
 
-  # one final change: in 2000, an elector abstained so we can add the missing EV to dc's total EV count
+  # one final change: in 2000, an elector abstained so we can add the missing EV to DC's total EV count
   clean_data[264,16] <- 3
 
   return(clean_data)
