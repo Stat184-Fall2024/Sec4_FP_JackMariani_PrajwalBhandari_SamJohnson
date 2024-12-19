@@ -108,17 +108,7 @@ kable(
   )
 
 
-
-
 ## bootstrapping and numerical results ----
-
-# for the following analysis, we wish to bootstrap the data to get an insight into the following question
-# What can we expect the electoral value (in terms of EV) of a single vote given that you vote in a a competitive state ?
-# Significance:
-# Many elections are decided by very slim margins, and voters, especially in battleground and swing states are inundated with
-# messaging about the power of their vote to sway their state results. If so, the voters in a close state that make up the winning
-# would constitute a high electoral value for each given vote. Via bootstrapping, we can see the average electoral vote of margin voters
-# We separate the data into two groups: margins less than 8% and margins greater than 8% and compare the bootstrap distributions.
 
 # use a sample size of 100 and 2000 repetitions for each
 # for graph quality, we assign signed margins for a party. negative: democrat, positive: republican
@@ -143,7 +133,7 @@ ggplot() +
   labs(
     x = 'Margin Voters Per Electoral Vote',
     y = 'Number of Outcomes in Simulation',
-    title = 'Distribution of Margin Voters per Electoral Vote\n (200,000 Bootstrapped Values Per Group)'
+    title = 'Distribution of sample means of Margin Voters per Electoral Vote\n (200,000 Bootstrapped Values Per Group)'
     ) +
   annotate(
     'text',
@@ -163,7 +153,8 @@ ggplot() +
     color = 'blue',
     angle = 0,
     vjust = 0.5
-    )
+    ) +
+  theme_minimal()
 
 # review of numerical results
 
